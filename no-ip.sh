@@ -38,33 +38,13 @@ then
 	exit 35
 fi
 
-
-SERVICEURL="dynupdate.no-ip.com/nic/update"
-
-case "$SERVICE" in
-        noip)
-            SERVICEURL="dynupdate.no-ip.com/nic/update"
-            ;;
-         
-        dyndns)
-            SERVICEURL="members.dyndns.org/v3/update"
-            ;;
-         
-        duckdns)
-            SERVICEURL="www.duckdns.org/v3/update"
-            ;;
-        *)
-			SERVICEURL="dynupdate.no-ip.com/nic/update"
- 
-esac
-
 USERAGENT="--user-agent=\"no-ip shell script/1.0 mail@mail.com\""
 BASE64AUTH=$(echo '"$USER:$PASSWORD"' | base64)
 AUTHHEADER="--header=\"Authorization: $BASE64AUTH\""
 
 
 #echo "$AUTHHEADER $USERAGENT $NOIPURL"
-
+LASTIP=""
 while :
 	do
 		if [ -n "$DETECTIP" ]
@@ -77,21 +57,27 @@ while :
 	then
 		RESULT="Could not detect external IP."
 	else
-		case "$SERVICE" in
-	        dynu)
+		if [ "$LASTIP" != "$IP" ]; then
+			case "$SERVICE" in
+		        dynu)
 
-				# TODO
-	            SERVICEURL="dynupdate.no-ip.com/nic/update"
-	            ;;
+					# TODO
+		            SERVICEURL="dynupdate.no-ip.com/nic/update"
+		            ;;
 
-	        duckdns)
-				RESULT=$(wget --no-check-certificate -qO- $USERAGENT https://www.duckdns.org/update?domains=$HOSTNAME\&token=$USER\&ip=$IP\&verbose=true)
-	            ;;
-	        *)
-				SERVICEURL="dynupdate.no-ip.com/nic/update"
-	 
-		esac
+		        duckdns)
+					RESULT=$(wget --no-check-certificate -qO- $USERAGENT https://www.duckdns.org/update?domains=$HOSTNAME\&token=$USER\&ip=$IP\&verbose=true)
+		            ;;
+		        *)
+					SERVICEURL="dynupdate.no-ip.com/nic/update"
+		 
+			esac
+		else
+			RESULT="IP unchanged, not updated"
+		fi
 	fi
+
+	LASTIP="$IP"
 	#RESULT=$(wget --no-check-certificate -qO- $AUTHHEADER $USERAGENT $NOIPURL)
 	
 
