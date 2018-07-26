@@ -60,7 +60,7 @@ while :
 		if [ "$LASTIP" != "$IP" ]; then
 			case "$SERVICE" in
 		        dynu)
-					RESULT=$(wget --no-check-certificate -S -q $USERAGENT https://api.dynu.com/nic/update?hostname=$HOSTNAME\&myip=$IP\&password=$PASSWORD | grep "HTTP/")
+					RESULT=$(wget --no-check-certificate -S -q $USERAGENT https://api.dynu.com/nic/update?hostname=$HOSTNAME\&myip=$IP\&password=$PASSWORD | head -n1)
 		            ;;
 
 		        duckdns)
