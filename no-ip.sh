@@ -85,7 +85,7 @@ while :
 	            ;;
 
 	        duckdns)
-				RESULT=$(wget --no-check-certificate -qO- $USERAGENT https://www.duckdns.org/update?domains=$HOSTNAME&token=$USER[&ip=$IP)
+				RESULT=$(wget --no-check-certificate -qO- $USERAGENT https://www.duckdns.org/update?domains=$HOSTNAME&token=$USER&ip=$IP&verbose=true)
 	            ;;
 	        *)
 				SERVICEURL="dynupdate.no-ip.com/nic/update"
